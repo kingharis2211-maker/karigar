@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Briefcase, User, LogOut } from 'lucide-react';
+import { Home, Briefcase, User, LogOut, List } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface NavigationProps {
@@ -42,6 +42,17 @@ export default function Navigation({ currentScreen, onNavigate }: NavigationProp
 
               {user.role === 'buyer' && (
                 <>
+                  <button
+                    onClick={() => onNavigate('browse')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+                      currentScreen === 'browse'
+                        ? 'bg-blue-100 text-blue-600'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <List className="w-4 h-4" />
+                    Browse
+                  </button>
                   <button
                     onClick={() => onNavigate('services')}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
@@ -117,6 +128,20 @@ export default function Navigation({ currentScreen, onNavigate }: NavigationProp
             <Home className="w-4 h-4" />
             Dashboard
           </button>
+
+          {user.role === 'buyer' && (
+            <button
+              onClick={() => onNavigate('browse')}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition whitespace-nowrap text-sm ${
+                currentScreen === 'browse'
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'text-gray-600'
+              }`}
+            >
+              <List className="w-4 h-4" />
+              Browse
+            </button>
+          )}
 
           <button
             onClick={() => onNavigate('services')}

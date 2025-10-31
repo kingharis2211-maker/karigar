@@ -5,12 +5,15 @@ import Register from './screens/Register';
 import BuyerDashboard from './screens/BuyerDashboard';
 import ProviderDashboard from './screens/ProviderDashboard';
 import Profile from './screens/Profile';
+import ServiceListing from './screens/ServiceListing';
+import ProviderProfile from './screens/ProviderProfile';
 import Navigation from './components/Navigation';
 
 function AppContent() {
   const { user, loading } = useAuth();
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const [currentScreen, setCurrentScreen] = useState<string>('dashboard');
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.role === 'provider') {
@@ -44,11 +47,29 @@ function AppContent() {
     }
   };
 
+  const handleProviderSelect = (providerId: string) => {
+    setSelectedProviderId(providerId);
+    setCurrentScreen('provider-profile');
+  };
+
+  const handleBackFromProvider = () => {
+    setSelectedProviderId(null);
+    setCurrentScreen('browse');
+  };
+
   return (
     <>
-      <Navigation currentScreen={currentScreen} onNavigate={setCurrentScreen} />
+      {currentScreen !== 'provider-profile' && (
+        <Navigation currentScreen={currentScreen} onNavigate={setCurrentScreen} />
+      )}
 
       {currentScreen === 'dashboard' && user.role === 'buyer' && <BuyerDashboard />}
+      {currentScreen === 'browse' && user.role === 'buyer' && (
+        <ServiceListing onProviderSelect={handleProviderSelect} />
+      )}
+      {currentScreen === 'provider-profile' && selectedProviderId && (
+        <ProviderProfile providerId={selectedProviderId} onBack={handleBackFromProvider} />
+      )}
       {currentScreen === 'services' && user.role === 'buyer' && <BuyerDashboard />}
       {currentScreen === 'services' && user.role === 'provider' && <ProviderDashboard />}
       {currentScreen === 'dashboard' && user.role === 'provider' && <ProviderDashboard />}
